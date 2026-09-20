@@ -1,0 +1,398 @@
+/* 容器 */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 8px 24px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* GIF动画区域 */
+.gif-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.gif-container img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
+/* 投球按钮行 */
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+/* 普通投球按钮 */
+.draw-btn {
+  flex: 1;
+  min-height: 50px;
+  border: none;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(to right, #4B3FE3, #6A6FFF);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.draw-btn:hover {
+  background: linear-gradient(to right, #5A4DFF, #7A85FF);
+}
+
+.draw-btn:active {
+  background: #3F31C6;
+}
+
+.draw-btn:disabled {
+  background: #BDBDBD;
+  cursor: not-allowed;
+}
+
+/* 长按投球按钮 */
+.long-press-btn {
+  flex: 1;
+  min-height: 50px;
+  border: none;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(to right, #9b59b6, #8e44ad);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.long-press-btn:hover {
+  background: linear-gradient(to right, #a569bd, #9b59b6);
+}
+
+.long-press-btn:active {
+  background: #7d3c98;
+}
+
+.long-press-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* 长按投球运行状态 */
+.long-press-btn.running {
+  background: #95a5a6;
+}
+
+.long-press-btn.running:hover {
+  background: #7f8c8d;
+}
+
+.long-press-btn.running:active {
+  background: #6c7a7b;
+}
+
+/* 统计和概率按钮行 */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 0;
+  gap: 8px;
+}
+
+.stats-label {
+  color: #666;
+  font-size: 13px;
+}
+
+.prob-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  height: 24px;
+  padding: 2px 6px;
+  background: #e8e8e8;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.prob-btn:hover {
+  background: #d0d0d0;
+}
+
+/* 分隔线 */
+.separator {
+  height: 1px;
+  background: #eee;
+  margin: 4px 0;
+}
+
+/* 抽卡记录标题和筛选状态 */
+.records-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.records-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.filter-label {
+  display: none;
+  background: #3498db;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.filter-label.show {
+  display: inline-block;
+}
+
+.clear-filter-btn {
+  display: none;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 12px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  height: 28px;
+}
+
+.clear-filter-btn:hover {
+  background: #c0392b;
+}
+
+.clear-filter-btn.show {
+  display: inline-block;
+}
+
+/* 点击提示 */
+.filter-hint {
+  color: #999;
+  font-size: 11px;
+  padding: 2px 0;
+}
+
+/* 卡片容器 */
+.records-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+  flex: 1;
+  align-content: flex-start;
+}
+
+/* 卡片 */
+.card {
+  width: 120px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 卡片图片 */
+.card-image {
+  width: 100%;
+  height: 100px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.card-image .fallback-icon {
+  font-size: 32px;
+  color: #666;
+}
+
+/* 颜色信息区域 */
+.card-colors {
+  width: 100%;
+  padding: 4px 0;
+  text-align: center;
+}
+
+.color-label {
+  font-size: 12px;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 1px 0;
+  border-radius: 3px;
+}
+
+.color-label:hover {
+  background: #e8e8e8;
+}
+
+.color-label.bw {
+  font-size: 30px;
+  padding: 4px 0;
+}
+
+/* 标签行 */
+.card-tags {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.tag:hover {
+  opacity: 0.8;
+}
+
+.tag-talent {
+  background: #ffeaa7;
+  color: #d63031;
+}
+
+.tag-talent-none {
+  background: #ecf0f1;
+  color: #666;
+}
+
+.tag-personality {
+  background: #74b9ff;
+  color: #0984e3;
+}
+
+/* 概率弹窗 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.modal-body h4 {
+  color: #2c3e50;
+  margin: 12px 0 6px 0;
+  font-size: 14px;
+}
+
+.modal-body ul {
+  padding-left: 20px;
+  margin: 4px 0;
+}
+
+.modal-body li {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.modal-note {
+  color: #999;
+  font-size: 12px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.close-modal-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 16px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.close-modal-btn:hover {
+  background: #2980b9;
+}
+
+/* 响应式 - 小屏幕 */
+@media screen and (max-width: 400px) {
+  .container {
+    padding: 8px 12px 16px 12px;
+  }
+  
+  .card {
+    width: calc(50% - 4px);
+  }
+  
+  .btn-row {
+    flex-direction: column;
+  }
+}
