@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>模拟投球</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      background: #f5f5f5;
+    }
+  </style>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- GIF动画区域 -->
+    <div class="gif-container">
+        <img id="gif-image" src="./assets/images/ball_animation.gif" alt="投球动图" />
+    </div>
+
+    <!-- 投球按钮行 -->
+    <div class="btn-row">
+      <button id="draw-btn" class="draw-btn">🎯 投球！</button>
+      <button id="long-press-btn" class="long-press-btn">⏱ 长按投球</button>
+    </div>
+
+    <!-- 统计和概率按钮行 -->
+    <div class="stats-row">
+      <span id="stats-label" class="stats-label">投球次数: 0</span>
+      <button id="prob-btn" class="prob-btn">📊 概率</button>
+    </div>
+
+    <!-- 分隔线 -->
+    <div class="separator"></div>
+
+    <!-- 抽卡记录标题和筛选状态 -->
+    <div class="records-header">
+      <span class="records-title">📋 抽卡记录</span>
+      <span id="filter-label" class="filter-label"></span>
+      <button id="clear-filter-btn" class="clear-filter-btn">取消筛选</button>
+    </div>
+
+    <!-- 点击提示文字 -->
+    <p class="filter-hint">点击对应标签可以筛选</p>
+
+    <!-- 卡片容器 -->
+    <div id="records-container" class="records-container"></div>
+  </div>
+
+  <!-- 概率弹窗 -->
+  <div id="prob-modal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">📊 抽卡概率表</h3>
+      <div class="modal-body">
+        <h4>🎯 炫彩类型</h4>
+        <ul>
+          <li>黑白：1%</li>
+          <li>普通：99%</li>
+        </ul>
+        <h4>✨ 粒子特效</h4>
+        <ul>
+          <li>四角星：60%</li>
+          <li>爱心：30%</li>
+          <li>方块：9%</li>
+          <li>五角星：1%</li>
+        </ul>
+        <h4>⚔️ 特长</h4>
+        <ul>
+          <li>无：64%</li>
+          <li>奇袭 / 亲密 / 灵巧 / 疾行 / 同乘 / 无畏：各 5.76%</li>
+          <li>爱分享 / 家里蹲 / 热心教：各 0.48%</li>
+          <li>慈悲为怀：0.01%</li>
+        </ul>
+        <h4>💭 性格</h4>
+        <ul>
+          <li>30种性格，各 1/30 ≈ 3.33%</li>
+        </ul>
+        <p class="modal-note">⚠️ 以上概率仅为模拟，与实际游戏无关。</p>
+      </div>
+      <button id="close-modal-btn" class="close-modal-btn">关闭</button>
+    </div>
+  </div>
+
+  <script src="./assets/main.js"></script>
+</body>
+</html>
