@@ -1,18 +1,22 @@
-/* 容器 */
 .container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 8px 24px 16px 24px;
+  padding: 8px 16px 16px 16px;
+  display: -webkit-box;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* GIF动画区域 */
 .gif-container {
+  display: -webkit-box;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
   padding: 8px 0;
 }
 
@@ -22,29 +26,36 @@
   height: auto;
 }
 
-/* 投球按钮行 */
 .btn-row {
+  display: -webkit-box;
   display: flex;
-  justify-content: center;
-  gap: 12px;
+  -webkit-box-pack: center;
+          justify-content: center;
   padding: 8px 0;
 }
 
-/* 普通投球按钮 */
+.btn-row > * + * {
+  margin-left: 12px;
+}
+
 .draw-btn {
-  flex: 1;
+  -webkit-box-flex: 1;
+          flex: 1;
   min-height: 50px;
   border: none;
   border-radius: 12px;
   font-size: 20px;
   font-weight: bold;
   color: white;
+  background: -webkit-gradient(linear, left top, right top, from(#4B3FE3), to(#6A6FFF));
   background: linear-gradient(to right, #4B3FE3, #6A6FFF);
   cursor: pointer;
+  -webkit-transition: all 0.15s ease;
   transition: all 0.15s ease;
 }
 
 .draw-btn:hover {
+  background: -webkit-gradient(linear, left top, right top, from(#5A4DFF), to(#7A85FF));
   background: linear-gradient(to right, #5A4DFF, #7A85FF);
 }
 
@@ -57,21 +68,24 @@
   cursor: not-allowed;
 }
 
-/* 长按投球按钮 */
 .long-press-btn {
-  flex: 1;
+  -webkit-box-flex: 1;
+          flex: 1;
   min-height: 50px;
   border: none;
   border-radius: 12px;
   font-size: 20px;
   font-weight: bold;
   color: white;
+  background: -webkit-gradient(linear, left top, right top, from(#9b59b6), to(#8e44ad));
   background: linear-gradient(to right, #9b59b6, #8e44ad);
   cursor: pointer;
+  -webkit-transition: all 0.15s ease;
   transition: all 0.15s ease;
 }
 
 .long-press-btn:hover {
+  background: -webkit-gradient(linear, left top, right top, from(#a569bd), to(#9b59b6));
   background: linear-gradient(to right, #a569bd, #9b59b6);
 }
 
@@ -84,7 +98,6 @@
   cursor: not-allowed;
 }
 
-/* 长按投球运行状态 */
 .long-press-btn.running {
   background: #95a5a6;
 }
@@ -97,13 +110,18 @@
   background: #6c7a7b;
 }
 
-/* 统计和概率按钮行 */
 .stats-row {
+  display: -webkit-box;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
   padding: 6px 0;
-  gap: 8px;
+}
+
+.stats-row > * + * {
+  margin-left: 8px;
 }
 
 .stats-label {
@@ -112,9 +130,12 @@
 }
 
 .prob-btn {
+  display: -webkit-inline-box;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center;
   min-width: 68px;
   height: 24px;
   padding: 2px 6px;
@@ -124,6 +145,7 @@
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
+  -webkit-transition: background 0.15s ease;
   transition: background 0.15s ease;
 }
 
@@ -131,26 +153,100 @@
   background: #d0d0d0;
 }
 
-/* 分隔线 */
+.filter-stats-row {
+  display: none;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+  margin: 6px 0;
+  gap: 4px;
+}
+
+.filter-stats-row.active {
+  display: -webkit-box;
+  display: flex;
+}
+
+.filter-stats-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.filter-stats-message:empty {
+  display: none;
+}
+
+.filter-stats-message {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "SimHei", "STHeiti", "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: #000;
+  text-align: center;
+  line-height: 1.3;
+}
+
 .separator {
   height: 1px;
   background: #eee;
   margin: 4px 0;
 }
 
-/* 抽卡记录标题和筛选状态 */
 .records-header {
+  display: -webkit-box;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+          align-items: center;
   padding: 6px 0;
-  gap: 8px;
-  flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.records-header > * + * {
+  margin-left: 8px;
 }
 
 .records-title {
   font-size: 16px;
   font-weight: bold;
   color: #333;
+}
+
+/* 筛选信息显示/隐藏开关 */
+.info-toggle-btn {
+  display: -webkit-inline-box;
+  display: inline-flex;
+  -webkit-box-align: center;
+          align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #3498db;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  background: #3498db;
+  color: white;
+}
+
+.info-toggle-btn:hover {
+  background: #2980b9;
+  border-color: #2980b9;
+}
+
+.info-toggle-btn.active {
+  background: white;
+  color: #3498db;
+}
+
+.info-toggle-btn.active:hover {
+  background: #e8f4fd;
 }
 
 .filter-label {
@@ -177,6 +273,7 @@
   font-size: 12px;
   padding: 4px 12px;
   cursor: pointer;
+  -webkit-transition: background 0.15s ease;
   transition: background 0.15s ease;
   height: 28px;
 }
@@ -189,71 +286,93 @@
   display: inline-block;
 }
 
-/* 点击提示 */
 .filter-hint {
   color: #999;
   font-size: 11px;
   padding: 2px 0;
 }
 
-/* 卡片容器 */
 .records-container {
+  display: -webkit-box;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   padding: 4px 0;
-  flex: 1;
-  align-content: flex-start;
+  -webkit-box-flex: 1;
+          flex: 1;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
 }
 
-/* 卡片 */
+.records-container > .card {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+/* ===== 卡片尺寸 ===== */
 .card {
-  width: 120px;
+  width: 100px;
   background: #f8f9fa;
-  border-radius: 12px;
-  padding: 8px;
+  border-radius: 10px;
+  padding: 5px;
+  display: -webkit-box;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+  -webkit-box-align: center;
+          align-items: center;
 }
 
-/* 卡片图片 */
 .card-image {
   width: 100%;
-  height: 100px;
+  height: 83px;
   background: white;
-  border-radius: 8px;
+  border-radius: 6px;
+  display: -webkit-box;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .card-image img {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  -o-object-fit: contain;
+     object-fit: contain;
+  pointer-events: none;
 }
 
 .card-image .fallback-icon {
-  font-size: 32px;
+  font-size: 22px;
   color: #666;
 }
 
-/* 颜色信息区域 */
+/* 默认隐藏色卡信息，通过 .show-info 类控制显示 */
 .card-colors {
+  display: none;
   width: 100%;
-  padding: 4px 0;
+  padding: 3px 0;
   text-align: center;
+  cursor: pointer;
+}
+
+.card.show-info .card-colors {
+  display: block;
 }
 
 .color-label {
-  font-size: 12px;
+  font-size: 10px;
   color: #333;
   font-weight: bold;
   cursor: pointer;
   padding: 1px 0;
   border-radius: 3px;
+  line-height: 1.3;
 }
 
 .color-label:hover {
@@ -261,26 +380,36 @@
 }
 
 .color-label.bw {
-  font-size: 30px;
-  padding: 4px 0;
+  font-size: 20px;
+  padding: 2px 0;
 }
 
-/* 标签行 */
 .card-tags {
+  display: -webkit-box;
   display: flex;
-  gap: 3px;
-  justify-content: center;
-  flex-wrap: wrap;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  -webkit-box-align: center;
+          align-items: center;
+}
+
+.card-tags > * + * {
+  margin-left: 2px;
 }
 
 .tag {
   display: inline-block;
-  padding: 2px 5px;
+  padding: 2px 3px;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
   cursor: pointer;
+  -webkit-transition: opacity 0.15s ease;
   transition: opacity 0.15s ease;
+  line-height: 1.2;
+  vertical-align: middle;
 }
 
 .tag:hover {
@@ -302,7 +431,18 @@
   color: #0984e3;
 }
 
-/* 概率弹窗 */
+.tag-index {
+  font-size: 10px;
+  color: #000;
+  font-weight: normal;
+  padding: 2px 2px;
+  background: none;
+  cursor: default;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -312,12 +452,15 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
   padding: 20px;
 }
 
 .modal.show {
+  display: -webkit-box;
   display: flex;
 }
 
@@ -375,6 +518,7 @@
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
+  -webkit-transition: background 0.15s ease;
   transition: background 0.15s ease;
 }
 
@@ -382,17 +526,23 @@
   background: #2980b9;
 }
 
-/* 响应式 - 小屏幕 */
 @media screen and (max-width: 400px) {
   .container {
     padding: 8px 12px 16px 12px;
   }
-  
+
   .card {
     width: calc(50% - 4px);
   }
-  
+
   .btn-row {
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+            flex-direction: column;
+  }
+
+  .btn-row > * + * {
+    margin-left: 0;
+    margin-top: 8px;
   }
 }

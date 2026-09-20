@@ -1,9 +1,5 @@
-(function() {
+(function () {
   'use strict';
-
-  // ============================================================
-  // 数据定义
-  // ============================================================
 
   var PARTICLES = ['四角星', '爱心', '方块', '五角星'];
   var PARTICLE_PROB = { '四角星': 0.60, '爱心': 0.30, '方块': 0.09, '五角星': 0.01 };
@@ -45,10 +41,6 @@
 
   var IMAGES_DIR = './assets/images/';
 
-  // ============================================================
-  // 状态变量
-  // ============================================================
-
   var drawCount = 0;
   var isDrawing = false;
   var cards = [];
@@ -57,9 +49,8 @@
   var isLongPressRunning = false;
   var longPressTimer = null;
 
-  // ============================================================
-  // DOM 引用
-  // ============================================================
+  // 色卡信息显示状态：true = 显示，false = 隐藏
+  var showCardInfo = false;
 
   var drawBtn = document.getElementById('draw-btn');
   var longPressBtn = document.getElementById('long-press-btn');
@@ -71,16 +62,28 @@
   var probModal = document.getElementById('prob-modal');
   var closeModalBtn = document.getElementById('close-modal-btn');
   var gifImage = document.getElementById('gif-image');
+  var infoToggleBtn = document.getElementById('info-toggle-btn');
+  var filterStatsRow = document.getElementById('filter-stats-row');
+  var filterStatsLabel = document.getElementById('filter-stats-label');
+  var filterStatsMessage = document.getElementById('filter-stats-message');
 
-  // ============================================================
-  // 工具函数
-  // ============================================================
+  var gifOriginalSrc = gifImage ? gifImage.src : '';
+
+  function playGif() {
+    if (gifImage && gifOriginalSrc) {
+      gifImage.src = '';
+      gifImage.src = gifOriginalSrc;
+    }
+  }
 
   function weightedChoice(weights) {
     var items = Object.keys(weights);
-    var probs = Object.keys(weights).map(function(k) { return weights[k]; });
-    var total = 0;
+    var probs = [];
     var i;
+    for (i = 0; i < items.length; i++) {
+      probs.push(weights[items[i]]);
+    }
+    var total = 0;
     for (i = 0; i < probs.length; i++) {
       total += probs[i];
     }
@@ -97,32 +100,13 @@
   function getImageFilename(colorCombination, particle) {
     if (particle) {
       return colorCombination + '.' + particle + '.炫彩.png';
-    } else {
-      return colorCombination + '.炫彩.png';
     }
+    return colorCombination + '.炫彩.png';
   }
 
   function getImagePath(colorCombination, particle) {
     return IMAGES_DIR + getImageFilename(colorCombination, particle);
   }
-
-  // ============================================================
-  // GIF 动画控制
-  // ============================================================
-
-  var gifOriginalSrc = gifImage ? gifImage.src : '';
-
-  function playGif() {
-    if (gifImage && gifOriginalSrc) {
-      // 重置GIF播放（通过重新设置src）
-      gifImage.src = '';
-      gifImage.src = gifOriginalSrc;
-    }
-  }
-
-  // ============================================================
-  // 抽卡逻辑
-  // ============================================================
 
   function draw() {
     var result = {};
@@ -150,16 +134,13 @@
     return result;
   }
 
-  // ============================================================
-  // 创建卡片
-  // ============================================================
-
-  function createCard(result, index) {
+  function createCard(result, drawNumber) {
     var card = document.createElement('div');
     card.className = 'card';
-    card.setAttribute('data-index', index);
+    if (showCardInfo) {
+      card.classList.add('show-info');
+    }
 
-    // 图片区域
     var imageDiv = document.createElement('div');
     imageDiv.className = 'card-image';
 
@@ -167,8 +148,7 @@
     var img = document.createElement('img');
     img.src = imgPath;
     img.alt = result.colorCombination;
-    img.onerror = function() {
-      // 图片加载失败时显示备用图标
+    img.onerror = function () {
       imageDiv.innerHTML = '';
       var icon = document.createElement('span');
       icon.className = 'fallback-icon';
@@ -178,7 +158,7 @@
     imageDiv.appendChild(img);
     card.appendChild(imageDiv);
 
-    // 颜色信息区域
+    // 色卡信息区域 - 始终添加筛选属性，显示/隐藏只控制视觉
     var colorsDiv = document.createElement('div');
     colorsDiv.className = 'card-colors';
 
@@ -190,7 +170,6 @@
       bwLabel.setAttribute('data-filter-value', '黑白');
       colorsDiv.appendChild(bwLabel);
     } else {
-      // 顶色
       var color1Label = document.createElement('div');
       color1Label.className = 'color-label';
       color1Label.textContent = '顶色: ' + result.color1;
@@ -198,7 +177,6 @@
       color1Label.setAttribute('data-filter-value', result.color1);
       colorsDiv.appendChild(color1Label);
 
-      // 底色
       var color2Label = document.createElement('div');
       color2Label.className = 'color-label';
       color2Label.textContent = '底色: ' + result.color2;
@@ -206,7 +184,6 @@
       color2Label.setAttribute('data-filter-value', result.color2);
       colorsDiv.appendChild(color2Label);
 
-      // 粒子
       if (result.particle) {
         var particleLabel = document.createElement('div');
         particleLabel.className = 'color-label';
@@ -219,11 +196,18 @@
 
     card.appendChild(colorsDiv);
 
-    // 标签行
+    // 标签区域（特长/性格），始终显示且始终可筛选
     var tagsDiv = document.createElement('div');
     tagsDiv.className = 'card-tags';
 
-    // 特长标签
+    // 添加投球序号
+    if (drawNumber) {
+      var indexSpan = document.createElement('span');
+      indexSpan.className = 'tag-index';
+      indexSpan.textContent = drawNumber;
+      tagsDiv.appendChild(indexSpan);
+    }
+
     var talentClass = result.talent !== '无' ? 'tag tag-talent' : 'tag tag-talent-none';
     var talentTag = document.createElement('span');
     talentTag.className = talentClass;
@@ -232,7 +216,6 @@
     talentTag.setAttribute('data-filter-value', result.talent);
     tagsDiv.appendChild(talentTag);
 
-    // 性格标签
     var personalityTag = document.createElement('span');
     personalityTag.className = 'tag tag-personality';
     personalityTag.textContent = result.personality;
@@ -242,37 +225,124 @@
 
     card.appendChild(tagsDiv);
 
-    // 绑定筛选点击事件
     var filterElements = card.querySelectorAll('[data-filter-type]');
-    var i;
-    for (i = 0; i < filterElements.length; i++) {
-      filterElements[i].addEventListener('click', onFilterClick);
+    for (var i = 0; i < filterElements.length; i++) {
+      filterElements[i].addEventListener('click', onLabelClick);
+    }
+
+    // 为色卡图片添加上下区域点击筛选
+    if (result.shinyType === '黑白') {
+      // 黑白卡：点击图片区域任意位置均触发bw筛选
+      imageDiv.addEventListener('click', function (e) {
+        if (isFilterTarget(e)) return;
+        onCardAreaClick('bw', '黑白');
+      });
+      colorsDiv.addEventListener('click', function (e) {
+        if (isFilterTarget(e)) return;
+        onCardAreaClick('bw', '黑白');
+      });
+    } else {
+      // 彩色卡：点击图片上半部分=顶色，下半部分=底色
+      imageDiv.addEventListener('click', function (e) {
+        if (isFilterTarget(e)) return;
+        var rect = imageDiv.getBoundingClientRect();
+        var clickY = e.clientY - rect.top;
+        var halfHeight = rect.height / 2;
+        if (clickY < halfHeight) {
+          // 上半部分 → 顶色
+          onCardAreaClick('color1', result.color1);
+        } else {
+          // 下半部分 → 底色
+          onCardAreaClick('color2', result.color2);
+        }
+      });
+      colorsDiv.addEventListener('click', function (e) {
+        if (isFilterTarget(e)) return;
+        onCardAreaClick('color2', result.color2);
+      });
     }
 
     return card;
   }
 
-  // ============================================================
-  // 投球逻辑
-  // ============================================================
+  function isFilterTarget(e) {
+    // 如果点击目标本身是data-filter-type标签，则让标签自己的处理逻辑接管
+    var target = e.target;
+    while (target) {
+      if (target.getAttribute && target.getAttribute('data-filter-type')) {
+        return true;
+      }
+      if (target.parentNode) {
+        target = target.parentNode;
+      } else {
+        break;
+      }
+    }
+    return false;
+  }
+
+  function onLabelClick(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    onFilterClick.call(this, e);
+  }
+
+  function onCardAreaClick(filterType, filterValue) {
+    var exists = false;
+    for (var i = 0; i < currentFilters.length; i++) {
+      if (currentFilters[i].type === filterType && currentFilters[i].value === filterValue) {
+        currentFilters.splice(i, 1);
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      currentFilters.push({ type: filterType, value: filterValue });
+    }
+    applyFilters();
+  }
+
+  function updateAllCardsInfoDisplay() {
+    for (var i = 0; i < cards.length; i++) {
+      if (showCardInfo) {
+        cards[i].classList.add('show-info');
+      } else {
+        cards[i].classList.remove('show-info');
+      }
+    }
+  }
+
+  function onInfoToggle() {
+    showCardInfo = !showCardInfo;
+
+    if (showCardInfo) {
+      infoToggleBtn.textContent = '🎨 隐藏色卡信息';
+      infoToggleBtn.classList.add('active');
+    } else {
+      infoToggleBtn.textContent = '🎨 显示色卡信息';
+      infoToggleBtn.classList.remove('active');
+    }
+
+    updateAllCardsInfoDisplay();
+
+    // 筛选条件可能涉及色卡信息，重新应用筛选
+    if (currentFilters.length > 0) {
+      applyFilters();
+    }
+  }
 
   function onDraw(longPress) {
-    if (isDrawing) {
-      return;
-    }
+    if (isDrawing) return;
     isDrawing = true;
 
     drawBtn.disabled = true;
     drawBtn.textContent = '投球中...';
 
-    // 播放GIF动画
     playGif();
 
     if (longPress) {
-      // 长按模式下直接执行
       executeDraw();
     } else {
-      // 延迟后显示结果
       setTimeout(executeDraw, 500);
     }
   }
@@ -282,14 +352,11 @@
     drawCount++;
     statsLabel.textContent = '投球次数: ' + drawCount;
 
-    // 保存记录数据
     records.unshift(result);
 
-    // 创建卡片
-    var card = createCard(result, 0);
+    var card = createCard(result, drawCount);
     cards.unshift(card);
 
-    // 重新渲染
     if (currentFilters.length > 0) {
       applyFilters();
     } else {
@@ -301,13 +368,8 @@
     isDrawing = false;
   }
 
-  // ============================================================
-  // 长按投球切换
-  // ============================================================
-
   function onLongPressToggle() {
     if (isLongPressRunning) {
-      // 停止连续投球
       isLongPressRunning = false;
       if (longPressTimer) {
         clearInterval(longPressTimer);
@@ -316,36 +378,24 @@
       longPressBtn.textContent = '⏱ 长按投球';
       longPressBtn.classList.remove('running');
     } else {
-      // 开始连续投球
       isLongPressRunning = true;
       longPressBtn.textContent = '点击停止';
       longPressBtn.classList.add('running');
 
-      // 立即执行一次投球（长按模式）
       onDraw(true);
 
-      // 启动定时器，每1.5秒执行一次
-      longPressTimer = setInterval(function() {
+      longPressTimer = setInterval(function () {
         onDraw(true);
       }, 1500);
     }
   }
 
-  // ============================================================
-  // 布局管理
-  // ============================================================
-
   function relayoutCards() {
     recordsContainer.innerHTML = '';
-    var i;
-    for (i = 0; i < cards.length; i++) {
+    for (var i = 0; i < cards.length; i++) {
       recordsContainer.appendChild(cards[i]);
     }
   }
-
-  // ============================================================
-  // 筛选逻辑
-  // ============================================================
 
   var TYPE_NAMES = {
     'bw': '黑白',
@@ -359,12 +409,9 @@
   function onFilterClick(e) {
     var filterType = e.currentTarget.getAttribute('data-filter-type');
     var filterValue = e.currentTarget.getAttribute('data-filter-value');
-    var newFilter = { type: filterType, value: filterValue };
 
-    // 检查是否已存在相同条件
     var exists = false;
-    var i;
-    for (i = 0; i < currentFilters.length; i++) {
+    for (var i = 0; i < currentFilters.length; i++) {
       if (currentFilters[i].type === filterType && currentFilters[i].value === filterValue) {
         currentFilters.splice(i, 1);
         exists = true;
@@ -373,18 +420,16 @@
     }
 
     if (!exists) {
-      currentFilters.push(newFilter);
+      currentFilters.push({ type: filterType, value: filterValue });
     }
 
     applyFilters();
   }
 
   function applyFilters() {
-    // 更新筛选标签显示
     if (currentFilters.length > 0) {
       var texts = [];
-      var i;
-      for (i = 0; i < currentFilters.length; i++) {
+      for (var i = 0; i < currentFilters.length; i++) {
         var typeName = TYPE_NAMES[currentFilters[i].type] || currentFilters[i].type;
         texts.push(typeName + ': ' + currentFilters[i].value);
       }
@@ -396,37 +441,27 @@
       clearFilterBtn.classList.remove('show');
     }
 
-    // 获取匹配的卡片
     var matchedCards = [];
-    var i, j;
-    for (i = 0; i < records.length; i++) {
+    for (var i = 0; i < records.length; i++) {
       var record = records[i];
       var match = true;
 
-      for (j = 0; j < currentFilters.length; j++) {
+      for (var j = 0; j < currentFilters.length; j++) {
         var ftype = currentFilters[j].type;
         var fvalue = currentFilters[j].value;
 
         if (ftype === 'bw') {
-          if (record.shinyType !== '黑白') {
-            match = false;
-            break;
-          }
+          if (record.shinyType !== '黑白') { match = false; break; }
         } else if (ftype === 'color1' && record.color1 !== fvalue) {
-          match = false;
-          break;
+          match = false; break;
         } else if (ftype === 'color2' && record.color2 !== fvalue) {
-          match = false;
-          break;
+          match = false; break;
         } else if (ftype === 'particle' && record.particle !== fvalue) {
-          match = false;
-          break;
+          match = false; break;
         } else if (ftype === 'talent' && record.talent !== fvalue) {
-          match = false;
-          break;
+          match = false; break;
         } else if (ftype === 'personality' && record.personality !== fvalue) {
-          match = false;
-          break;
+          match = false; break;
         }
       }
 
@@ -435,10 +470,38 @@
       }
     }
 
-    // 重新渲染
     recordsContainer.innerHTML = '';
-    for (i = 0; i < matchedCards.length; i++) {
-      recordsContainer.appendChild(matchedCards[i]);
+    for (var k = 0; k < matchedCards.length; k++) {
+      recordsContainer.appendChild(matchedCards[k]);
+    }
+
+    updateFilterStats(matchedCards.length, records.length);
+  }
+
+  function updateFilterStats(matchedCount, totalCount) {
+    if (currentFilters.length === 0) {
+      filterStatsRow.classList.remove('active');
+      return;
+    }
+
+    filterStatsRow.classList.add('active');
+
+    var percentage = totalCount > 0 ? (matchedCount / totalCount * 100) : 0;
+    filterStatsLabel.textContent = '投球次数: ' + totalCount + '，计数：' + matchedCount + '，占比：' + percentage.toFixed(1) + '%';
+
+    // 黑白概率特殊判断
+    if (currentFilters.length === 1 && currentFilters[0].type === 'bw') {
+      if (percentage > 1) {
+        filterStatsMessage.textContent = '！？欧欧？！';
+      } else if (percentage < 1) {
+        filterStatsMessage.textContent = '！？非非？！';
+      } else {
+        filterStatsMessage.textContent = '？！刚刚好？！';
+      }
+      filterStatsMessage.classList.add('active');
+    } else {
+      filterStatsMessage.textContent = '';
+      filterStatsMessage.classList.remove('active');
     }
   }
 
@@ -446,12 +509,10 @@
     currentFilters = [];
     filterLabel.classList.remove('show');
     clearFilterBtn.classList.remove('show');
+    filterStatsRow.classList.remove('active');
+    filterStatsMessage.classList.remove('active');
     relayoutCards();
   }
-
-  // ============================================================
-  // 概率弹窗
-  // ============================================================
 
   function showProbability() {
     probModal.classList.add('show');
@@ -461,24 +522,14 @@
     probModal.classList.remove('show');
   }
 
-  // ============================================================
-  // 事件绑定
-  // ============================================================
-
-  drawBtn.addEventListener('click', function() {
-    onDraw(false);
-  });
-
+  drawBtn.addEventListener('click', function () { onDraw(false); });
   longPressBtn.addEventListener('click', onLongPressToggle);
-
   probBtn.addEventListener('click', showProbability);
-
   closeModalBtn.addEventListener('click', hideProbability);
+  infoToggleBtn.addEventListener('click', onInfoToggle);
 
-  probModal.addEventListener('click', function(e) {
-    if (e.target === probModal) {
-      hideProbability();
-    }
+  probModal.addEventListener('click', function (e) {
+    if (e.target === probModal) hideProbability();
   });
 
   clearFilterBtn.addEventListener('click', clearFilter);
