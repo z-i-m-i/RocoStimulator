@@ -68,9 +68,12 @@
   var filterStatsMessage = document.getElementById('filter-stats-message');
 
   var gifOriginalSrc = gifImage ? gifImage.src : '';
+  var gifPlayed = false;  // 标记 GIF 是否已播放过，避免重复加载
 
   function playGif() {
-    if (gifImage && gifOriginalSrc) {
+    // GIF 只在首次投球时播放，后续不再重置，避免重复解码 1.2MB 的 GIF
+    if (gifImage && gifOriginalSrc && !gifPlayed) {
+      gifPlayed = true;
       gifImage.src = '';
       gifImage.src = gifOriginalSrc;
     }
@@ -148,6 +151,7 @@
     var img = document.createElement('img');
     img.src = imgPath;
     img.alt = result.colorCombination;
+    img.decoding = 'async';
     img.onerror = function () {
       imageDiv.innerHTML = '';
       var icon = document.createElement('span');
@@ -357,10 +361,37 @@
     var card = createCard(result, drawCount);
     cards.unshift(card);
 
+    // 性能优化：直接操作 DOM，不清空重建
     if (currentFilters.length > 0) {
-      applyFilters();
+      // 有筛选时，只检查新卡片是否匹配
+      var match = true;
+      for (var j = 0; j < currentFilters.length; j++) {
+        var ftype = currentFilters[j].type;
+        var fvalue = currentFilters[j].value;
+        if (ftype === 'bw') {
+          if (result.shinyType !== '黑白') { match = false; break; }
+        } else if (ftype === 'color1' && result.color1 !== fvalue) {
+          match = false; break;
+        } else if (ftype === 'color2' && result.color2 !== fvalue) {
+          match = false; break;
+        } else if (ftype === 'particle' && result.particle !== fvalue) {
+          match = false; break;
+        } else if (ftype === 'talent' && result.talent !== fvalue) {
+          match = false; break;
+        } else if (ftype === 'personality' && result.personality !== fvalue) {
+          match = false; break;
+        }
+      }
+      var currentDisplayCount = recordsContainer.children.length;
+      if (match) {
+        // 新卡片匹配筛选条件，插入到容器最前面
+        recordsContainer.insertBefore(card, recordsContainer.firstChild);
+        updateFilterStats(currentDisplayCount + 1, records.length);
+      }
+      // 不匹配则不显示，但卡片仍保存在 cards 数组中
     } else {
-      relayoutCards();
+      // 无筛选时，直接插入容器最前面
+      recordsContainer.insertBefore(card, recordsContainer.firstChild);
     }
 
     drawBtn.disabled = false;
